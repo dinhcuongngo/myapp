@@ -5,13 +5,17 @@ namespace App;
 use App\Category;
 use App\Seller;
 use App\Transaction;
-
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
+    use SoftDeletes;
+
     const AVAILABLE_PRODUCT = 'available';
     const UNAVAILABLE_PRODUCT = 'unavailable';
+
+    protected $dates = ['deleted_at'];
     //
     protected $fillable = [
     	'name',
@@ -22,6 +26,9 @@ class Product extends Model
     	'seller_id',
     ];
 
+    protected $hidden = [
+        'pivot'
+    ];
     //setting product's status is available
     public function isAvailable()
     {
@@ -40,6 +47,6 @@ class Product extends Model
 
     public function transactions()
     {
-    	return $this->belongsToMany(Transaction::class);
+    	return $this->hasMany(Transaction::class);
     }
 }

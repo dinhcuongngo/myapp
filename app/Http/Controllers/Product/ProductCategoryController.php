@@ -2,23 +2,24 @@
 
 namespace App\Http\Controllers\Product;
 
+use App\Category;
+use App\Http\Controllers\ApiController;
 use App\Product;
 use Illuminate\Http\Request;
-use App\Http\Controllers\ApiController;
 
-class ProductController extends ApiController
+class ProductCategoryController extends ApiController
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Product $product)
     {
         //
-        $products = Product::all();
+        $categories = $product->categories;
 
-        return $this->showAll($products);
+        return $this->showAll($categories);
     }
 
     /**
@@ -51,7 +52,6 @@ class ProductController extends ApiController
     public function show(Product $product)
     {
         //
-        return $this->showOne($product);
     }
 
     /**
@@ -72,9 +72,12 @@ class ProductController extends ApiController
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, Product $product, Category $category)
     {
-        //
+        //attach, sync, syncWithoutDetach
+        $product->categories()->attach([$category->id]);
+
+        return $this->showAll($product->categories);
     }
 
     /**
@@ -83,8 +86,15 @@ class ProductController extends ApiController
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy(Product $product, Category $category)
     {
         //
+        if(!$product->categories()->find($category->id)){
+           return $this->errorResponse('The specified category is not a category of this product',404);
+        }
+
+        $product->categories()->detach($category->id);
+
+        return $this->showAll($product->categories);
     }
 }

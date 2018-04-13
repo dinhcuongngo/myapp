@@ -6,19 +6,24 @@ use App\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 
-class ProductController extends ApiController
+class ProductBuyerController extends ApiController
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Product $product)
     {
         //
-        $products = Product::all();
+        $buyers = $product->transactions()
+                ->with('buyer')
+                ->get()
+                ->pluck('buyer')
+                ->unique('id')
+                ->values();
 
-        return $this->showAll($products);
+        return $this->showAll($buyers);
     }
 
     /**
@@ -51,7 +56,6 @@ class ProductController extends ApiController
     public function show(Product $product)
     {
         //
-        return $this->showOne($product);
     }
 
     /**

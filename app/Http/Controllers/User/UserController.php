@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Http\Controllers\User;
-use App\User;
-use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
+use App\User;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Http\Request;
 
 class UserController extends ApiController
 {
@@ -12,6 +13,10 @@ class UserController extends ApiController
      *
      * @return \Illuminate\Http\Response
      */
+    use SoftDeletes;
+
+    protected $dates = ['deleted_at'];
+
     public function index()
     {
         //
@@ -65,11 +70,16 @@ class UserController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    
+    /*public function show($id)
     {
         //
         $user = User::findOrFail($id);
         //return response()->json(['data'=>$user],200);
+        return $this->showOne($user);
+    }*/
+    public function show(User $user)
+    {
         return $this->showOne($user);
     }
 
@@ -91,11 +101,11 @@ class UserController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
         //
-
-        $user = User::findOrFail($id);
+        
+        //$user = User::findOrFail($id);
         $rules = [
             'email' => 'email|unique:users,email,'.$user->id,
             'password' => 'min:6|confirmed',
@@ -142,7 +152,7 @@ class UserController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    /*public function destroy($id)
     {
         //
         $user = User::findOrFail($id);
@@ -150,6 +160,12 @@ class UserController extends ApiController
         $user->delete();
 
         //return response()->json(['data'=>$user],200);
+        return $this->showOne($user);
+    }*/
+
+    public function destroy(User $user)
+    {
+        $user->delete();
         return $this->showOne($user);
     }
 }

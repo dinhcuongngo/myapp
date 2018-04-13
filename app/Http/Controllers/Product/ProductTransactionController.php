@@ -6,29 +6,19 @@ use App\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 
-class ProductController extends ApiController
+class ProductTransactionController extends ApiController
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Product $product)
     {
         //
-        $products = Product::all();
+        $transactions = $product->transactions;
 
-        return $this->showAll($products);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $this->showAll($transactions);
     }
 
     /**
@@ -51,7 +41,6 @@ class ProductController extends ApiController
     public function show(Product $product)
     {
         //
-        return $this->showOne($product);
     }
 
     /**

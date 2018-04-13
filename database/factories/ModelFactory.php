@@ -43,7 +43,10 @@ $factory->define(Product::class, function (Faker $faker) {
         'description' => $faker->paragraph(1),
         'quantity' => $faker->numberBetween(1, 10),
         'status' => $faker->randomElement([Product::AVAILABLE_PRODUCT, Product::UNAVAILABLE_PRODUCT]),
-        'image' => $faker->randomElement(['1.jpg','2.jpg','3.jpg']),
+        'image' => $faker->randomElement([
+            'http://172.17.28.219:8888/imgs/1.jpg',
+            'http://172.17.28.219:8888/imgs/2.png',
+            'http://172.17.28.219:8888/imgs/3.png']),
         'seller_id' => User::all()->random()->id,
         //'seller_id' => User::inRandomOrder()->first()->id,
     ];
